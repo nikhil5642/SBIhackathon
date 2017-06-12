@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SBI hackathon</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="sbi_api">5TSRV5XmldI4UfC</string>
+    <string name="sbi_acc_no">30001512992</string>
+
+</resources>
