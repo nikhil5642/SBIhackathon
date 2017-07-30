@@ -1,13 +1,17 @@
 package com.example.nikhil.sbihackathon;
 
 import android.accounts.Account;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,23 +37,69 @@ import java.util.ArrayList;
 
 public class DepositAccount extends AppCompatActivity {
 
-    private static final String Sbi_REQUEST_URL = "http://52.172.213.166:8080/sbi/Account_List/api/EnqBancsAccountsList/";
+   // private static final String Sbi_REQUEST_URL = "http://52.172.213.166:8080/sbi/Account_List/api/EnqBancsAccountsList/";
     private ListView listView;
     private MyAccountList myAccountList;
-
-
+    private Account_layout account;
+    private ArrayList<Account_layout> deposit_list,whole_list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deposit_account);
+        setupActionbar();
         listView=(ListView)findViewById(R.id.list_deposit_account);
+        Intent i=getIntent();
+        account=(Account_layout) i.getSerializableExtra("cust");
+         deposit_list=(ArrayList<Account_layout>)i.getSerializableExtra("deposit_acc_list");
+      //  AccountAsync task=new AccountAsync();
+        //task.execute();
 
-        AccountAsync task=new AccountAsync();
-        task.execute();
-
+        set(deposit_list);
 
     }
-    public class AccountAsync extends AsyncTask<URL,Void,ArrayList<Account_layout>> {
+
+    private void set(ArrayList<Account_layout> account) {
+
+        ArrayList<Account_layout> arrayList= account;
+        final adapter_account_list adapter=new adapter_account_list(DepositAccount.this,arrayList);
+
+        ListView listView=(ListView)findViewById(R.id.list_deposit_account);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Account_layout current=adapter.getItem(position);
+                Intent intent=new Intent(DepositAccount.this,Account_detail_all.class);
+                intent.putExtra("mi",current);
+                startActivity(intent);
+
+            }
+        });
+
+    }
+    private void setupActionbar(){
+        LayoutInflater inflater=(LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v=inflater.inflate(R.layout.actionbar,null);
+
+        ActionBar actionBar=getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        //actionBar.setBackgroundDrawable(getDrawable(R.drawable.sbi_logo));
+        //actionBar.setHomeButtonEnabled(true);
+        //  actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setCustomView(v);
+        ImageView home=(ImageView)findViewById(R.id.home_btn);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(DepositAccount.this,HomeActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+    }
+
+  /*  public class AccountAsync extends AsyncTask<URL,Void,ArrayList<Account_layout>> {
         ArrayList<Account_layout> Account;
         String jsonResponse="";
 
@@ -77,25 +127,6 @@ public class DepositAccount extends AppCompatActivity {
 
     }
 
-    private void set(ArrayList<Account_layout> account) {
-
-        ArrayList<Account_layout> arrayList= account;
-        final adapter_account_list adapter=new adapter_account_list(DepositAccount.this,arrayList);
-
-        ListView listView=(ListView)findViewById(R.id.list_deposit_account);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Account_layout current=adapter.getItem(position);
-              Intent intent=new Intent(DepositAccount.this,Account_detail_all.class);
-                  intent.putExtra("mi",current);
-               startActivity(intent);
-
-                }
-        });
-
-    }
     public URL create(String str){
         URL url=null;
         try {
@@ -112,8 +143,7 @@ public class DepositAccount extends AppCompatActivity {
         JSONObject jsonObject=new JSONObject();
         try {
 
-            jsonObject.put("AccountNumber","30001512992" );
-
+            jsonObject.put("AccountNumber",account.getAccount_no().substring(6,17));
 
             httpURLConnection=(HttpURLConnection)url.openConnection();
             httpURLConnection.setRequestMethod("POST");
@@ -195,6 +225,6 @@ public class DepositAccount extends AppCompatActivity {
         return arrayList;
 
 
-    }
+    }*/
 
 }

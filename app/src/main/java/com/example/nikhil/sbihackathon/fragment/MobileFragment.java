@@ -1,16 +1,17 @@
-package com.asmobisoft.coffer.fragments;
+package com.example.nikhil.sbihackathon.fragment;
 
 
-import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,44 +23,42 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.asmobisoft.coffer.MainActivity1;
-import com.asmobisoft.coffer.R;
-import com.asmobisoft.coffer.adapter.CustomAdapter;
-import com.asmobisoft.coffer.commonmethod.Constants;
-import com.asmobisoft.coffer.commonmethod.Utility;
-import com.asmobisoft.coffer.model.AllProviders;
-import com.asmobisoft.coffer.model.ProvidersData;
-import com.asmobisoft.coffer.utility.ApiInterface;
-import com.asmobisoft.coffer.webservices.ApiClient;
-import com.asmobisoft.coffer.webservices.NetClientGet;
+import com.example.nikhil.sbihackathon.HomeActivity;
+import com.example.nikhil.sbihackathon.MobileRechargeActivity;
+import com.example.nikhil.sbihackathon.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+public class MobileFragment extends Fragment {
 
-public class MobileFragment extends Fragment implements View.OnClickListener{
-
-
+    public static final String ALL_PROVIDERS = "https://www.pay2all.in/web-api/get-provider?api_token=lPDJRHIy6Fhe4TOEOJC8x8e3B7WiW2oTuooMvATFCUSk8AWi1tXxMxuM8Cgz";
     private LinearLayout llTab1View;
     private Spinner spnrMobile;
     private RadioGroup radioMobileGroup;
     private RadioButton radioMobileButton;
-
-    private Button btnRechargeNow;
+    private EditText mobile_no,mobile_amount;
+    private Button btnRechargeNowmobile;
     private String TAG = "MobileFragment";
 
-    // TODO - insert your API KEY obtained from pay2all.com here
-    private final static String API_KEY = "PPqNCFK6DCncHEvLzza4qBmQLS8IbNT60kl0loMVfp6x5h6cXRi3HztFt4Z2";
 
-    private CustomAdapter mSpinnerAdapeter;
-    ArrayList<ProvidersData> providerList = new ArrayList<ProvidersData>();
+    private CustomAdapter_spin mSpinnerAdapeter;
+
+    ArrayList<ProvidersData> postpaid_List = new ArrayList<ProvidersData>();
+    ArrayList<ProvidersData> mobile_List = new ArrayList<ProvidersData>();
+    ArrayList<ProvidersData> provide_List = new ArrayList<ProvidersData>();
+
     public MobileFragment() {
         // Required empty public constructor
     }
@@ -74,197 +73,170 @@ public class MobileFragment extends Fragment implements View.OnClickListener{
         llTab1View = (LinearLayout) v.findViewById(R.id.ll_tab1_view);
         spnrMobile = (Spinner) v.findViewById(R.id.spnr_oprator);
         radioMobileGroup = (RadioGroup) v.findViewById(R.id.radio_mobile);
-        btnRechargeNow = (Button) v.findViewById(R.id.btn_recharge_now);
-        btnRechargeNow.setOnClickListener(this);
+        btnRechargeNowmobile = (Button) v.findViewById(R.id.btn_mobile_recharge_now);
+        mobile_no=(EditText)v.findViewById(R.id.mobile_number);
+        mobile_amount=(EditText)v.findViewById(R.id.mobile_amount);
 
         int selectedIdMobile = radioMobileGroup.getCheckedRadioButtonId();
         radioMobileButton = (RadioButton) v.findViewById(selectedIdMobile);
 
+        MobileFragment.AccountAsync task = new MobileFragment.AccountAsync();
+        task.execute();
 
-
-        if(Utility.isOnline(getActivity())){
-            new ProviderAsync().execute();
-        }else {
-            Utility.InternetSetting(getActivity());
-        }
-
-
-
-       /* ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
-
-        Call<AllProviders> call = apiService.getProvider(API_KEY);
-        call.enqueue(new Callback<AllProviders>() {
+        radioMobileGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onResponse(Call<AllProviders> call, Response<AllProviders> response) {
-                int statusCode = response.code();
-                Log.e("MobileFragment","Responce : "+ response.body().getProviders() +"\n"+ statusCode);
-               //insert data in list here  List<ProvidersData> movies = response.body().getResults();
-                List<ProvidersData> providersDataList = response.body().getProviders();
-               // recyclerView.setAdapter(new MoviesAdapter(movies, R.layout.list_item_movie, getApplicationContext()));
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                if(checkedId==R.id.postpaid){
+                    mSpinnerAdapeter = new CustomAdapter_spin(getContext(), R.layout.spinner_row, postpaid_List);
+                    spnrMobile.setAdapter(mSpinnerAdapeter);
 
-            }
+                }
+                else if(checkedId==R.id.prepaid){
+                    mSpinnerAdapeter = new CustomAdapter_spin(getContext(), R.layout.spinner_row, mobile_List);
+                    spnrMobile.setAdapter(mSpinnerAdapeter);
 
-            @Override
-            public void onFailure(Call<AllProviders> call, Throwable t) {
-                // Log error here since request failed
-                Log.e(TAG, t.toString());
+                }
             }
         });
-*/
-        /*List<String> list = new ArrayList<String>();
-        list.add("Airtel");
-        list.add("Vodafone");
-        list.add("Relince");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnrMobile.setAdapter(dataAdapter);*/
-
-        // Listener called when spinner item selected
-        spnrMobile.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        btnRechargeNowmobile.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View v, int position, long id) {
-                // your code here
+            public void onClick(View v) {
+          try{  //    Intent intent=new Intent(getActivity(),pay2all_transaction.class);
+                //ProvidersData s= (ProvidersData) spnrMobile.getSelectedItem();
+                //ProvidersData data=new ProvidersData(s.getProvider_id(),mobile_no.getText().toString(),mobile_amount.getText().toString());
+                //intent.putExtra("data",data);
+                //startActivity(intent);
 
-                // Get selected row data to show on screen
-                String name    = ((TextView) v.findViewById(R.id.tv_spinner_text)).getText().toString();
+              String item[]={"Balance in your account is insufficint please Recharge"};
+              AlertDialog.Builder dialog=new AlertDialog.Builder(getContext());
+              dialog.setTitle("Insufficient balance! ");
+              dialog.setItems(item, new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                      dialog.dismiss();
+                  }
+              });
+              dialog.show();
 
-             //   String CompanyUrl = ((TextView) v.findViewById(R.id.sub)).getText().toString();
-              //  TextView output = null;
-                String OutputMsg = "Selected Company : \n\n"+name;
-               // output.setText(OutputMsg);
-
-
-                Toast.makeText(getActivity(),OutputMsg, Toast.LENGTH_LONG).show();
-
+          }catch (Exception e){
+            Log.e("error","jffjhfff");
+              e.printStackTrace();
+          }
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-
         });
-
-
         return v;
     }
-    private ProgressDialog mProgressDialog;
-    private class ProviderAsync extends AsyncTask<String, String, String> {
+
+    public class AccountAsync extends AsyncTask<URL, Void, String> {
+        String pro;
+        String jsonResponse = "";
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+        protected String doInBackground(URL... params) {
+            URL url = create(ALL_PROVIDERS);
 
-            mProgressDialog = new ProgressDialog(getActivity());
-            mProgressDialog.setMessage("Please wait...");
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
-
-        }
-
-        protected String doInBackground(String... urls) {
-            NetClientGet mNetClientGet = new NetClientGet(getActivity());
-//
-            String responce = "";
-
-            String url = Constants.ALL_PROVIDERS+API_KEY;
-            Log.e("Login","URL : "+url);
-
-            responce = mNetClientGet.getDataClientData(url);
-
-            Log.e("Login","responce : "+responce);
-            return responce;
-
-        }
-        EditText etOTPField;
-        protected void onPostExecute(String result) {
-            if(mProgressDialog !=null){
-                mProgressDialog.dismiss();
+            try {
+                jsonResponse = makeHttpRequest(url);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            Log.e("Signup","responce otp : "+result);
-            if(result != null ){
-                if(!result.equals("")){
+            return jsonResponse;
+        }
 
-                    String data = "";
-                    try {
-                        JSONObject  jsonRootObject = new JSONObject(result);
+        @Override
+        protected void onPostExecute(String account) {
+            extractBankAccount(jsonResponse);
+        }
 
-                        //Get the instance of JSONArray that contains JSONObjects
-                        JSONArray jsonArray = jsonRootObject.optJSONArray("providers");
+        public URL create(String str) {
+            URL url = null;
+            try {
+                url = new URL(str);
+            } catch (MalformedURLException e) {
+                return null;
+            }
+            return url;
+        }
 
-                        //Iterate the jsonArray and print the info of JSONObjects
-                        for(int i=0; i < jsonArray.length(); i++){
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+        public String makeHttpRequest(URL url) throws IOException {
+            String jsonResponse = "";
+            HttpURLConnection httpURLConnection = null;
+            InputStream inputStream = null;
+            JSONObject jsonObject = new JSONObject();
+            try {
 
-                            ProvidersData mProvidersData = new ProvidersData();
-                            if(!jsonObject.optString("provider_id").toString().equals("")){
-                                mProvidersData.setProvider_id(jsonObject.optString("provider_id").toString());
-                            }else{
-                                mProvidersData.setProvider_id("");
-                            }
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("GET");
+                httpURLConnection.setRequestProperty("Content-Type", "application/json");
+                httpURLConnection.setReadTimeout(1000000);
+                httpURLConnection.setConnectTimeout(15000);
+                httpURLConnection.connect();
 
-                            if(!jsonObject.optString("provider_name").toString().equals("")){
-                                mProvidersData.setProvider_name(jsonObject.optString("provider_name").toString());
-                            }else{
-                                mProvidersData.setProvider_name("");
-                            }
+                inputStream = httpURLConnection.getInputStream();
+                jsonResponse = readfromstream(inputStream);
 
-                            if(!jsonObject.optString("provider_code").toString().equals("")){
-                                mProvidersData.setProvider_code(jsonObject.optString("provider_code").toString());
-                            }else{
-                                mProvidersData.setProvider_code("");
-                            }
-
-                            if(!jsonObject.optString("status").toString().equals("")){
-                                mProvidersData.setStatus(jsonObject.optString("status").toString());
-                            }else{
-                                mProvidersData.setStatus("");
-                            }
-
-                            if(!jsonObject.optString("service").toString().equals("")){
-                                mProvidersData.setService(jsonObject.optString("service").toString());
-                            }else{
-                                mProvidersData.setService("");
-                            }
-                            providerList.add(mProvidersData);
-/*
-                            String provider_name = jsonObject.optString("provider_name").toString();
-                            String provider_code = jsonObject.optString("provider_code").toString();
-                            String status= jsonObject.optString("status").toString();
-
-                            data += "Node"+i+" : \n provider_name= "+ provider_name +" \n provider_code= "+ provider_code
-                                    +" \n status= "+ status +" \n ";
-                            Log.e(TAG,"Data : "+data);*/
-                        }
-
-                        mSpinnerAdapeter = new CustomAdapter(getActivity(),R.layout.spinner_row,providerList);
-                        spnrMobile.setAdapter(mSpinnerAdapeter);
-
-                    } catch (JSONException e) {e.printStackTrace();}
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
                 }
 
-                }else{
-                    Toast.makeText(getActivity(),getResources().getString(R.string.internet_connection_dialog),Toast.LENGTH_LONG).show();
+            }
+            return jsonResponse;
+        }
+
+        private String readfromstream(InputStream inputStream) throws IOException {
+            StringBuilder output = new StringBuilder();
+            if (inputStream != null) {
+                InputStreamReader inputstreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+                BufferedReader reader = new BufferedReader(inputstreamReader);
+                String line = reader.readLine();
+                while (line != null) {
+                    output.append(line);
+                    line = reader.readLine();
                 }
+            }
+            return output.toString();
+        }
 
+        public void extractBankAccount(String json) {
+            ArrayList<String> x=new ArrayList<String>();
+            try {
+                JSONObject jsonRootObject = new JSONObject(json);
 
+                JSONArray jsonArray = jsonRootObject.getJSONArray("providers");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
 
+                    ProvidersData mProvidersData = new ProvidersData();
+                    mProvidersData.setProvider_id(jsonObject.getString("provider_id"));
+                    mProvidersData.setProvider_name(jsonObject.getString("provider_name"));
+                    mProvidersData.setProvider_code(jsonObject.getString("provider_code"));
+                    mProvidersData.setStatus(jsonObject.getString("status"));
+                    mProvidersData.setService(jsonObject.getString("service"));
+
+                    provide_List.add(mProvidersData);
+                    if(jsonObject.getString("service").contains("MOBILE")) {
+                        mobile_List.add(mProvidersData);
+                    }
+                    if(jsonObject.getString("service").contains("POSTPAID")) {
+                        postpaid_List.add(mProvidersData);
+                    }x.add(mProvidersData.getProvider_name());
+                }
+                //ArrayAdapter<String> adapter=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,x);
+                //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                //spnrMobile.setAdapter(adapter);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
-
         }
-
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()){
-            case R.id.btn_recharge_now:
-
-
-
-                break;
-        }
-
 
     }
+
 }
+

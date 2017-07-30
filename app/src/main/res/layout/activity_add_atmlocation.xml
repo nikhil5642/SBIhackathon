@@ -1,9 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.nikhil.sbihackathon.Add_atmlocation">
+    tools:context="com.example.nikhil.sbihackathon.Add_atmlocation"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_marginTop="@dimen/text_margin"
+    android:layout_marginBottom="@dimen/text_margin"
+    android:layout_marginLeft="@dimen/text_margin"
+    android:layout_marginRight="@dimen/text_margin">
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/latitude_add"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+        android:hint="Latitude"/>
+    <EditText
+        android:id="@+id/longitude_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Longitude"/>
+    <EditText
+        android:id="@+id/atm_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ATM Title"/>
+    <Button
+        android:id="@+id/btn_add_atm"
+        android:text="Add Location"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/button_color"
+        />
+</LinearLayout>

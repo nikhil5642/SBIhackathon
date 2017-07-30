@@ -1,14 +1,12 @@
-package com.asmobisoft.coffer.model;
+package com.example.nikhil.sbihackathon.fragment;
 
-import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * Created by root on 10/3/16.
  */
-public class ProvidersData {
+public class ProvidersData implements Serializable{
 /*    "provider_id": 0,
             "provider_name": "PAY2ALL",
             "provider_code": "PAY2ALL",
@@ -16,23 +14,23 @@ public class ProvidersData {
             "provider_image": "",
             "status": "Success"*/
 
-    @SerializedName("provider_id")
     private String provider_id;
 
-    @SerializedName("provider_name")
     private String provider_name;
 
-    @SerializedName("provider_code")
     private String provider_code;
 
-    @SerializedName("service")
     private String service;
 
-    @SerializedName("provider_image")
     private String provider_image;
 
-    @SerializedName("status")
-    private String status;
+    private String status,amount,number;
+
+    public ProvidersData(String provider_id, String amount, String number) {
+        this.provider_id = provider_id;
+        this.amount = amount;
+        this.number = number;
+    }
 
     public ProvidersData(String provider_id, String provider_name, String provider_code, String service, String provider_image, String status) {
         this.provider_id = provider_id;
@@ -47,6 +45,21 @@ public class ProvidersData {
 
     }
 
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
     public String getService() {
         return service;
     }

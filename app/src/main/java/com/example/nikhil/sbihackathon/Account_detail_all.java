@@ -1,8 +1,13 @@
 package com.example.nikhil.sbihackathon;
 
+import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,11 +30,12 @@ TextView Acc_no,Account_type,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_detail_all);
         Intent intent=getIntent();
-
-        Account_layout Account=intent.getParcelableExtra("mi");
+        setupActionbar();
+        Account_layout Account=(Account_layout) intent.getSerializableExtra("mi");
 
    if(Account!=null){    Acc_no=(TextView)findViewById(R.id.account_detail_all_Account_no);
-       Acc_no.setText(Account.toString());
+
+                         Acc_no.setText(Account.getAccount_no());
 
         Account_type=(TextView)findViewById(R.id.account_detail_all_Account_type);
         Account_type.setText(Account.getAccount_type());
@@ -51,6 +57,29 @@ TextView Acc_no,Account_type,
 
         Interest_rate=(TextView)findViewById(R.id.account_detail_all_Interest_Rate);
         Interest_rate.setText(Account.getInterest_rate());
+
+   }
     }
+    private void setupActionbar(){
+        LayoutInflater inflater=(LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v=inflater.inflate(R.layout.actionbar,null);
+
+        ActionBar actionBar=getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        //actionBar.setBackgroundDrawable(getDrawable(R.drawable.sbi_logo));
+        //actionBar.setHomeButtonEnabled(true);
+        //  actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setCustomView(v);
+        ImageView home=(ImageView)findViewById(R.id.home_btn);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Account_detail_all.this,HomeActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
     }
+
 }

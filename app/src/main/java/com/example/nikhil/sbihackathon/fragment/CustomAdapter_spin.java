@@ -1,4 +1,4 @@
-package com.asmobisoft.coffer.adapter;
+package com.example.nikhil.sbihackathon.fragment;
 
 import java.util.ArrayList;
 import android.app.Activity;
@@ -11,11 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.asmobisoft.coffer.R;
-import com.asmobisoft.coffer.model.ProvidersData;
+import com.example.nikhil.sbihackathon.R;
+import com.example.nikhil.sbihackathon.fragment.ProvidersData;
 
 /***** Adapter class extends with ArrayAdapter ******/
-public class CustomAdapter extends ArrayAdapter<String>{
+public class CustomAdapter_spin extends ArrayAdapter<String>{
      
     private Context mContext;
     private ArrayList data;
@@ -24,7 +24,7 @@ public class CustomAdapter extends ArrayAdapter<String>{
     LayoutInflater inflater;
      
     /*************  CustomAdapter Constructor *****************/
-    public CustomAdapter(
+    public CustomAdapter_spin(
                           Context mContext,
                           int textViewResourceId,   
                           ArrayList objects

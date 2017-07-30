@@ -6,27 +6,92 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/sbi_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/sbi"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="ocr" />
 
-        <activity android:name=".MainActivity" />
-        <activity android:name=".ImageSelector" />
-        <activity android:name=".Image_to_text" />
         <activity android:name=".HomeActivity" />
-        <activity android:name=".MyAccountList">
+        <activity
+            android:name=".MyAccountList"
+            android:parentActivityName=".HomeActivity" />
+        <activity android:name=".Loan_accounts" />
+        <activity android:name=".DepositAccount" />
+        <activity android:name=".MyPassbook" />
+        <activity android:name=".Account_detail_all" />
+        <activity android:name=".Benificiay_account" />
+        <activity android:name=".Transaction_List" />
+        <activity
+            android:name=".FundTranster_list"
+            android:parentActivityName=".HomeActivity" />
+        <activity android:name=".fund_transfer_customer_to_customer" />
+        <activity android:name=".fund_transfer_NEFT" />
+        <activity android:name=".transaction_status" />
+        <activity android:name=".confirm_fund_transfer_NEFT" />
+        <activity
+            android:name=".cheque_list"
+            android:parentActivityName=".HomeActivity" />
+        <activity android:name=".fund_transfer_rgts" />
+        <activity android:name=".confirm_fund_transfer_rgts" />
+        <activity android:name=".cheque_issueance" />
+        <activity android:name=".stop_cheque" />
+        <activity
+            android:name=".Enquiry_list"
+            android:parentActivityName=".HomeActivity" />
+        <activity android:name=".loan_enquiry" />
+        <activity android:name=".TDS_enquiry" />
+        <activity android:name=".customer_locker_enquiry" />
+        <activity android:name=".branchwise_locker_status_enquiry" />
+        <activity android:name=".loan_enquiry_details" />
+        <activity
+            android:name=".scanner"
+            android:parentActivityName=".HomeActivity" />
+        <activity android:name=".scanner_result" />
+        <activity android:name=".MobileRechargeActivity" />
+        <activity android:name=".fragment.pay2all_transaction" />
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity android:name=".MapsActivity"></activity>
+        <activity android:name=".Add_atmlocation" />
+        <activity android:name=".mapsLogin" />
+        <activity android:name=".Login_home">
+        </activity>
+        <activity android:name=".UPI" />
+        <activity android:name=".more" />
+        <activity android:name=".splash"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,26 +99,6 @@
             </intent-filter>
 
         </activity>
-        <activity
-            android:name=".BalanceEnquiry"
-            android:parentActivityName=".MyAccountList" />
-        <activity
-            android:name=".MiniStatement"
-            android:parentActivityName=".MyAccountList" />
-        <activity
-            android:name=".TransactionAccounts"
-            android:parentActivityName=".MyAccountList" />
-        <activity
-            android:name=".Loan_accounts"
-            android:parentActivityName=".MyAccountList" />
-        <activity
-            android:name=".DepositAccount"
-            android:parentActivityName=".MyAccountList">
-           </activity>
-        <activity
-            android:name=".MyPassbook"
-            android:parentActivityName=".MyAccountList" />
-        <activity android:name=".Account_detail_all"></activity>
     </application>
 
 </manifest>

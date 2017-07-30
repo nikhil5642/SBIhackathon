@@ -1,9 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:layout_marginLeft="@dimen/text_margin"
+    android:layout_marginRight="@dimen/text_margin"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.nikhil.sbihackathon.fund_transfer_customer_to_customer">
+    tools:context="com.example.nikhil.sbihackathon.fund_transfer_customer_to_customer"
+    android:orientation="vertical">
+    <TextView
+        android:layout_marginTop="@dimen/text_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Branch code"
+        android:textColor="@color/text_color"/>
+    <EditText
+        android:id="@+id/fund_transfer_customer_to_customer_branch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:layout_marginTop="@dimen/text_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="From Account"
+        android:textColor="@color/text_color"/>
+    <Spinner
+        android:layout_marginTop="@dimen/text_margin"
+        android:text="Select Account "
+        android:id="@+id/fund_transfer_customer_to_customer_from_acc_no"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/text_color"
+        />
+
+    <TextView
+        android:layout_marginTop="@dimen/text_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To Account"
+        android:textColor="@color/text_color"/>
+    <EditText
+        android:id="@+id/fund_transfer_customer_to_customer_to_acc_no"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <TextView
+        android:layout_marginTop="@dimen/text_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter Amount"
+        android:textColor="@color/text_color"/>
+    <EditText
+        android:id="@+id/fund_transfer_customer_to_customer_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <Button
+        android:id="@+id/fund_transfer_customer_to_customer_submit"
+        android:layout_marginTop="@dimen/text_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="Submit"
+        android:text="Make Payment"
+        android:background="@color/button_color"
+        android:textColor="@color/white"/>
+
+
+</LinearLayout>

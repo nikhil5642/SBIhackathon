@@ -4,5 +4,55 @@
     <string name="action_settings">Settings</string>
     <string name="sbi_api">5TSRV5XmldI4UfC</string>
     <string name="sbi_acc_no">30001512992</string>
+    <string name="help"><u>Help</u></string>
+    <string name="emailormob">Email or Mobile Number</string>
+    <string name="Password">Password</string>
+    <string name="forgot"><u>Forgot Password ?</u></string>
+    <string name="register_here"><u>Register Here</u></string><!--Register Screen -->
+    <string name="login_here"><u>Login Here If Already Register</u></string>
+    <string name="username">User Name</string>
+    <string name="firstname">First Name</string>
+    <string name="lastname">Last Name</string>
+    <string name="emial">Email</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="address">Address</string>
+    <string name="register">Register</string><!--E-wallet Screen-->
+    <string name="mobile_recharge">Mobile Recharge</string>
+    <string name="data_card">Data card</string>
+    <string name="pre">Prepaid</string>
+    <string name="post">Postpaid</string>
+    <string name="operator">Mobile Operator</string>
+    <string name="amount">Amount</string>
+    <string name="recharge_now">Recharge Now</string>
+    <string name="proced_to_recharge">Proceed To Recharge</string>
+    <string name="proced_to_pay">Proceed To Pay Bill</string>
+    <string name="submit">Submit</string>
+    <string name="enter_amount">Enter amount</string>
+    <string name="add_money">Add money to your wallet and avail\n amazing benefits!</string>
+    <string name="add_now">Add Now</string>
+    <string name="update">Update</string>
+    <string name="change_pass">Change Password</string><!-- Drawer Menu items -->
+    <string name="tb1">Mobile</string>
+    <string name="tb2">Datacard</string>
+    <string name="tb3">DTH</string>
+    <string name="tb4">Electricity</string><!-- Sliding Menu item icons -->
+    <string name="browse_plan"><u>Browse Plan</u></string>
+    <string name="pay2all">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImFiYmQ2YWQ2NDliNDEyM2YyZmQ2ZWQ4MThhYTU5MWNkZGM0NTQzZWM4MmY3NzFlZjY0NjE1NDA4ZGFlZDFiYWExNzA2NDQzZGZlYzkyYjQ1In0.eyJhdWQiOiI1IiwianRpIjoiYWJiZDZhZDY0OWI0MTIzZjJmZDZlZDgxOGFhNTkxY2RkYzQ1NDNlYzgyZjc3MWVmNjQ2MTU0MDhkYWVkMWJhYTE3MDY0NDNkZmVjOTJiNDUiLCJpYXQiOjE0OTc3NDA5OTYsIm5iZiI6MTQ5Nzc0MDk5NiwiZXhwIjoxNTI5Mjc2OTk2LCJzdWIiOiI3OTkwIiwic2NvcGVzIjpbXX0.kiZgaEyJrvKCfDo6ixcblIOMEQcTByqLMPKZartTRxT9TOhQjz9dIEQfSuFc6xQFN-bNROskP7K1htLd1YqIgDsEDGY9rjiAXSeCRyVCfi5lOvimdEVtKIYDxmYaiLLbVxKzTDkJBRtZtQxB5Zdh4UqbSByQBIU12rg0wPhhP0kF4wNjKFvDjY-7nenqvkBIt8SsPqKE4CzdItL-RTUpuCFPQRYKv4jq0lpUG5oEdhZMh7JmB8zgggBRVVnsn4dIMHXRLXU7hSmvQckla8Cnzpus_6tuPLKaKKUaOPm2DzOYW8AFeLXYDWa6wX-Zsb7juJ0jxfJCEeM_yRrWFvP4wfyfIkgOjJTl9P5W0_ZfzC4Zj8w4ymvdopMcMQAZYV3UFf95a8gxAnkNCKdWXjUL9eOQ9b1C4ACuZln2yZ69pF7g_bQhwNfPBIVC_XLOUqLfib5rwtvBEcygxKt-PVafUnafZ0uqELq-8AIOvFzvDQh3I79PMMJpCUN0TXM0q5EjVWv_5wrAua6lCACL7NM_ikQmVyrfGoSojRBZzvFNnE3n89BSvVcDODvSShJMIwexZJ3MlDCZ5nvn7h63muzSVnG2V4aOd-ExST8OsBHZ9O-q2VVaIn6fpi98JudZVv2-kvBgUf2tjX6SMiFOpOG8a-yIi3SI8o8U1W55Flcj3gk</string>
+    <string name="pay2all_api_token">lPDJRHIy6Fhe4TOEOJC8x8e3B7WiW2oTuooMvATFCUSk8AWi1tXxMxuM8Cgz</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps_login">Sign in</string>
 
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_login_home">Sign in</string>
 </resources>

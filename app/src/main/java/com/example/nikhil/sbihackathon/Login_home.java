@@ -1,348 +1,302 @@
 package com.example.nikhil.sbihackathon;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
-import java.util.ArrayList;
-import java.util.List;
+import android.widget.Toast;
 
-import static android.Manifest.permission.READ_CONTACTS;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import me.relex.circleindicator.CircleIndicator;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class Login_home extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class Login_home extends AppCompatActivity {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
     private static final int REQUEST_READ_CONTACTS = 0;
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mAuthTask = null;
-
-    // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
+    private String sent_otp_url="https://2factor.in/API/V1/77146786-5325-11e7-94da-0200cd936042/SMS/";
+    private String check_otp_url="https://2factor.in/API/V1/77146786-5325-11e7-94da-0200cd936042/SMS/VERIFY/";
+    TextView msg;
+    private EditText mOtp,mMobile;
+    private Button otp,login,another;
+    private static ViewPager mPager;
+    private static int currentPage = 0;
+    private String session_id,verify;
+    private static final Integer[] Hackathaon =
+            {R.drawable.sbi,
+                    R.drawable.ncip,
+                    R.drawable.microsoft,
+                    R.drawable.primechain,
+                    R.drawable.ca,
+                    R.drawable.vodafone,
+                    R.drawable.tata,
+                    R.drawable.credit_watch};
+    private ArrayList<Integer> HackathaonArray = new ArrayList<Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_home);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+        setupActionbar();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mMobile = (EditText)findViewById(R.id.login_mobile_no);
+        otp=(Button)findViewById(R.id.btn_send_otp);
+
+        mOtp=(EditText)findViewById(R.id.login_otp);
+        msg=(TextView)findViewById(R.id.otp_mesg);
+        login=(Button)findViewById(R.id.button_login);
+        another=(Button)findViewById(R.id.other_);
+
+        ImageView home=(ImageView)findViewById(R.id.home_btn);
+
+        home.setVisibility(View.INVISIBLE);
+
+        init();
+
+        otp.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
+            public void onClick(View v) {
+                Login_home.otp_AccountAsync task=new Login_home.otp_AccountAsync();
+                task.execute();
+
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+    login.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Login_home.cont_AccountAsync task2=new Login_home.cont_AccountAsync();
+            task2.execute();
+        }
+    });
+
+        another.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                attemptLogin();
+            public void onClick(View v) {
+                mOtp.setVisibility(View.INVISIBLE);
+                msg.setVisibility(View.INVISIBLE);
+                login.setVisibility(View.INVISIBLE);
+                another.setVisibility(View.INVISIBLE);
+                otp.setEnabled(true);
+                login.setEnabled(false);
+
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
+    private void setupActionbar(){
+        LayoutInflater inflater=(LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v=inflater.inflate(R.layout.actionbar,null);
 
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
+        ActionBar actionBar=getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        //actionBar.setBackgroundDrawable(getDrawable(R.drawable.sbi_logo));
+       actionBar.setHomeButtonEnabled(true);
+        //actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setCustomView(v);
 
-        getLoaderManager().initLoader(0, null, this);
     }
+    private void init() {
+        for(int i=0;i<Hackathaon.length;i++)
+            HackathaonArray.add(Hackathaon[i]);
 
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
+        mPager = (ViewPager) findViewById(R.id.viewPager_login);
+        mPager.setAdapter(new adapter_slider(Login_home.this,HackathaonArray));
+        CircleIndicator indicator = (CircleIndicator) findViewById(R.id.circle_indicator_login);
+        indicator.setViewPager(mPager);
+        final Handler handler = new Handler();
+        final Runnable Update = new Runnable() {
+            public void run() {
+                if (currentPage == Hackathaon.length) {
+                    currentPage = 0;
+                }
+                mPager.setCurrentItem(currentPage++, true);
             }
-        }
-    }
-
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
-        }
-    }
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
-    }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                                                                     .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-    }
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
         };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
+        Timer swipeTimer = new Timer();
+        swipeTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(Update);
+            }
+        },10000, 10000);
     }
 
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(Login_home.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
+    public class otp_AccountAsync extends AsyncTask<Object, Object, Void> {
+        String jsonResponse="";
+        ProgressDialog progressDialog=new ProgressDialog(Login_home.this);
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.setMessage("Sending...");
+            progressDialog.show();
+        }
+        @Override
+        protected Void doInBackground(Object... params) {
+            URL url=create(sent_otp_url+mMobile.getText().toString()+"/AUTOGEN");
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+                jsonResponse=makeHttpRequest(url);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+            session_id=extract_data(jsonResponse);
+            return null;
         }
-
         @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(session_id!=null){
+                mOtp.setVisibility(View.VISIBLE);
+                msg.setVisibility(View.VISIBLE);
+                login.setVisibility(View.VISIBLE);
+                another.setVisibility(View.VISIBLE);
+                otp.setEnabled(false);
+                login.setEnabled(true);
+                progressDialog.dismiss();
+               return;
             }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
+            Toast.makeText(Login_home.this,"ENTER A VALID MOBILE NO.",Toast.LENGTH_LONG).show();
+            progressDialog.dismiss();
         }
     }
+
+
+    public class cont_AccountAsync extends AsyncTask<URL,Void,Void> {
+        String jsonResponse="";
+        @Override
+        protected Void doInBackground(URL... params) {
+            URL url=create(check_otp_url+session_id+"/"+mOtp.getText().toString());
+            try {
+                jsonResponse=makeHttpRequest(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            verify=extract_data(jsonResponse);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        if(verify!=null) {
+
+            Intent intent=new Intent(Login_home.this,HomeActivity.class);
+            startActivity(intent);
+            Toast.makeText(Login_home.this,"LOGIN SUCCESSFUL",Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        Toast.makeText(Login_home.this,"OTP IS NOT VALID",Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+
+
+    public URL create(String str){
+        URL url=null;
+        try {
+            url=new URL(str);
+        } catch (MalformedURLException e) {
+            return null;
+        }
+        return url;
+    }
+
+    public String makeHttpRequest(URL url) throws IOException {
+        String jsonResponse="";
+        HttpURLConnection httpURLConnection=null;
+        InputStream inputStream=null;
+        JSONObject jsonObject=new JSONObject();
+        try {
+            httpURLConnection=(HttpURLConnection)url.openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setRequestProperty("Content-Type","application/json;chatset=utf-8");
+            httpURLConnection.setReadTimeout(1000000);
+            httpURLConnection.setConnectTimeout(15000);
+            httpURLConnection.connect();
+
+            inputStream=httpURLConnection.getInputStream();
+            jsonResponse=readfromstream(inputStream);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+           if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
+            }
+            if(inputStream!=null){
+                inputStream.close();
+            }
+        }
+        return jsonResponse;
+    }
+
+    private String readfromstream(InputStream inputStream) throws IOException {
+        StringBuilder output=new StringBuilder();
+        if(inputStream!=null){
+            InputStreamReader inputstreamReader=new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+            BufferedReader reader=new BufferedReader(inputstreamReader);
+            String line=reader.readLine();
+            while (line!=null){
+                output.append(line);
+                line=reader.readLine();
+            }
+        }
+        return output.toString();
+    }
+
+    public String extract_data(String json) {
+        Account_layout my_account = null;
+        String status="",detail=null;
+        try {
+            JSONObject object = new JSONObject(json);
+
+            status=object.getString("Status");
+
+            if(status.contains("Success")) {
+            detail=object.getString("Details");
+            }
+
+
+        } catch (JSONException e) {
+        }
+        return detail;
+    }
+
 }
+
+
 

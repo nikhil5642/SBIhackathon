@@ -9,21 +9,18 @@ import java.io.Serializable;
  * Created by nikhil on 12/6/17.
  */
 
-public class Account_layout implements Parcelable{
+public class Account_layout implements Serializable{
     String Account_category;
     String Account_no;
     String Account_type;
     String Available_balance;
     String Account_status;
     String Total_balance;
-
-    public String getApproved_sanction_amount() {
-        return Approved_sanction_amount;
-    }
-
     String Approved_sanction_amount;
     String Home_branch;
     String Interest_rate;
+
+    String Customer_name ,CustomerNumber,ModeofOperation,AccountOpenDate;
 
     public Account_layout(String account_category, String account_no, String account_type, String available_balance, String account_status, String total_balance, String approved_sanction_amount, String home_branch, String interest_rate) {
         Account_category = account_category;
@@ -35,6 +32,37 @@ public class Account_layout implements Parcelable{
         Approved_sanction_amount = approved_sanction_amount;
         Home_branch = home_branch;
         Interest_rate = interest_rate;
+    }
+
+    public Account_layout(String account_no, String account_type, String available_balance,String home_branch, String customer_name, String customerNumber, String modeofOperation, String accountOpenDate) {
+        Account_no = account_no;
+        Account_type = account_type;
+        Available_balance = available_balance;
+        Home_branch = home_branch;
+        Customer_name = customer_name;
+        CustomerNumber = customerNumber;
+        ModeofOperation = modeofOperation;
+        AccountOpenDate = accountOpenDate;
+    }
+
+    public String getCustomer_name() {
+        return Customer_name;
+    }
+
+    public String getCustomerNumber() {
+        return CustomerNumber;
+    }
+
+    public String getModeofOperation() {
+        return ModeofOperation;
+    }
+
+    public String getAccountOpenDate() {
+        return AccountOpenDate;
+    }
+
+    public String getApproved_sanction_amount() {
+        return Approved_sanction_amount;
     }
 
     public String getAccount_type() {
@@ -70,7 +98,7 @@ public class Account_layout implements Parcelable{
         return Total_balance;
     }
 
-    @Override
+/*    @Override
     public String toString() {
         return Account_no;
     }
@@ -115,4 +143,4 @@ public class Account_layout implements Parcelable{
             return new Account_layout[size];
         }
     };
-}
+*/}

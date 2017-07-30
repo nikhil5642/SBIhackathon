@@ -1,7 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -38,8 +37,7 @@
                 android:inputType="text"
                 android:padding="10dp"
                 android:paddingLeft="10dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black" />
+               />
 
             <Spinner
                 android:id="@+id/spnr_oprator"
@@ -65,8 +63,7 @@
                     android:inputType="number"
                     android:padding="10dp"
                     android:paddingLeft="10dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black" />
+                   />
 
 
                 <TextView
@@ -86,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/gredient_button"
+                android:background="@color/button_color"
                 android:padding="10dp"
                 android:text="@string/proced_to_recharge"
                 android:textColor="@android:color/white" />

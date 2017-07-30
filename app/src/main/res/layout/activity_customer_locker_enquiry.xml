@@ -5,5 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.nikhil.sbihackathon.customer_locker_enquiry">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="24dp"
+        android:text="Sorry, this Feature is Currently not available."/>
 
 </android.support.constraint.ConstraintLayout>

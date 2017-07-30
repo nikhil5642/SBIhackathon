@@ -1,7 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -43,8 +42,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
-                        android:text="Prepaid"
-                        android:textColor="@color/black" />
+                        android:text="Prepaid" />
 
                     <RadioButton
                         android:id="@+id/postpaid"
@@ -52,14 +50,13 @@
                         android:layout_height="wrap_content"
 
                         android:layout_marginLeft="10dp"
-                        android:text="Postpaid"
-                        android:textColor="@color/black" />
+                        android:text="Postpaid" />
                 </RadioGroup>
 
             </LinearLayout>
 
             <EditText
-                android:id="@+id/et_mobile_number"
+                android:id="@+id/mobile_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -67,10 +64,7 @@
                 android:imeOptions="actionNext"
                 android:inputType="number"
                 android:padding="10dp"
-                android:paddingLeft="10dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black" />
-
+                android:paddingLeft="10dp" />
             <Spinner
                 android:id="@+id/spnr_oprator"
                 android:layout_width="match_parent"
@@ -78,7 +72,7 @@
                 android:layout_marginTop="10dp" />
 
             <EditText
-                android:id="@+id/et_amount"
+                android:id="@+id/mobile_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -86,17 +80,15 @@
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:padding="10dp"
-                android:paddingLeft="10dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/black" />
+                android:paddingLeft="10dp"/>
 
             <Button
-                android:id="@+id/btn_recharge_now"
+                android:id="@+id/btn_mobile_recharge_now"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/gredient_button"
+                android:background="@color/button_color"
                 android:padding="10dp"
                 android:text="@string/recharge_now"
                 android:textColor="@android:color/white" />
